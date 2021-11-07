@@ -58,7 +58,45 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  
+  //create function for 'keydown' window event
+  function playSound(e) {
+    // look for an AUDIO tag and KEY class corresponding to keyCode value in data-keys 
+    // console.log(e.keyCode);
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
 
+    // console.log(e);
+    if(!audio) return; // stops the function if audio is falsey
+
+    //to "reset" audio file on each event
+    audio.currentTime = 0; //rewinds to audio's start
+    
+    audio.play();
+
+    //update CSS
+    key.classList.add('playing');
+  };
+
+  //create function to reset CSS
+  function removeTransition(e){
+    if(e.propertyName !== 'transform') return; //skip, if not transform
+    // console.log(e.propertyName);
+    console.log(e);
+    
+    console.log(this);
+    this.classList.remove('playing');
+  }
+
+  //javascript events monitor TRANSITIONs too, similar to 'click'
+  //instead of using a timeout, find a nodelist of all .key elements
+  //attach an eventListener for 'transitionend'
+  //when that occurs, call removeTransition function
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  
+  //window event
+  window.addEventListener('keydown', playSound);
 </script>
 
 
