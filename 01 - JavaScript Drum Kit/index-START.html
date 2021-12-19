@@ -9,6 +9,7 @@
 
 
   <div class="keys">
+    <!-- "65" is just the keycode to pressing 'A' key -->
     <div data-key="65" class="key">
       <kbd>A</kbd>
       <span class="sound">clap</span>
@@ -61,6 +62,10 @@
   
   //create function for 'keydown' window event
   function playSound(e) {
+    // 
+    console.log("playSound")
+
+
     // look for an AUDIO tag and KEY class corresponding to keyCode value in data-keys 
     // console.log(e.keyCode);
     const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
@@ -80,23 +85,33 @@
 
   //create function to reset CSS
   function removeTransition(e){
+    // 
+    console.log("removeTransition")
+    
     if(e.propertyName !== 'transform') return; //skip, if not transform
     // console.log(e.propertyName);
-    console.log(e);
+    // console.log(e);
     
-    console.log(this);
-    this.classList.remove('playing');
+    // console.log(this);
+    // this.classList.remove('playing');
+    e.target.classList.remove('playing'); // see Youtube comments; explains that 
   }
 
   //javascript events monitor TRANSITIONs too, similar to 'click'
   //instead of using a timeout, find a nodelist of all .key elements
-  //attach an eventListener for 'transitionend'
+  //attach an eventListener for 'transitionEND'
   //when that occurs, call removeTransition function
   const keys = document.querySelectorAll('.key');
   keys.forEach(key => key.addEventListener('transitionend', removeTransition));
   
   //window event
   window.addEventListener('keydown', playSound);
+
+
+  window.addEventListener('keydown', function(e){
+    console.log(e.keyCode);
+  });
+
 </script>
 
 
