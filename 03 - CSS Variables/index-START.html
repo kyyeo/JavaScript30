@@ -9,9 +9,11 @@
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
+    <!-- data-sizing is a data attribute to use 'px' as a suffix -->
     <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
 
     <label for="blur">Blur:</label>
+    <!-- 'name' attribute is useful for selection later on -->
     <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
 
     <label for="base">Base Color</label>
@@ -21,11 +23,45 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /* 
+      usually declare variables at the ROOT 
+      note that lower scope (i.e. further down DOM tree) takes precedence 
+      see .hl
+    */
+    :root {
+      --base: ##ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
 
+    img { 
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    /* 
+      .hl stands for highlight 
+      notice "JS" in <h2> element 
+    */    
+    .hl {
+      color: var(--base);
+    }
+
+    h2 {
+      /* 
+        despite sharing variable names, there is greater specificity,
+        as variable is declared at lower scope (i.e. h2 vs :root)
+       */
+      --base: #00FF00;
+    }
+
+    
+    
     /*
       misc styles, nothing to do with CSS variables
     */
-
+    
     body {
       text-align: center;
       background: #193549;
@@ -45,6 +81,35 @@
   </style>
 
   <script>
+    // returns a NODELIST, not an array
+    // arrays have methods such as reduce(), map() etc
+    // while nodelists have fewer such as forEach(), entries()
+    // to see this, open 'Console' and enter document.querySelectorAll('.controls input')
+    // then expand '__proto__'
+    // sometimes, it might be useful to convert from a nodelist to an array
+    // however, forEach() method suffices for this use case
+    const inputs = document.querySelectorAll('.controls input');
+
+    function handleUpdate() {
+      // log input's value, as it's changed
+      // console.log(this.value);
+
+      // console.log(this.dataset) // an object filled with every data- attribute
+      // || '' is a fallback, and stands for "or nothing" if no data attribute is found (e.g. hex code)
+      const suffix = this.dataset.sizing || '';
+      // console.log(suffix);
+
+
+      // update CSS variables
+      console.log(this.name); // input has a 'name' attribute
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix)
+    }
+
+    // 'change' for a final value change (i.e. lift off mouse)
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    // 'mousemove' for when sliding along too
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+
   </script>
 
 </body>

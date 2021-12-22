@@ -61,13 +61,57 @@
       background: black;
       position: absolute;
       top: 50%;
+
+      /* alters pivot point */
+      transform-origin: 100%;
+      transform: rotate(90deg); /*to point at 12 o'clock*/
+      transition: all 0.05s;
+      /* transition-timing-function: ease-in-out; */
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1); /*ticking animation*/
     }
 
   </style>
 
   <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
 
+    function setDate() {
+      const now = new Date(); // take time from JS
+      
+      const seconds = now.getSeconds();
+      seconds == 0 ? secondHand.style.transition = `none` : secondHand.style.transition = `all 0.05s`;
+      // if-else style
+      // if(seconds == 0) {
+      //   secondHand.style.transition = `none`;
+      // }
+      // else {
+      //   secondHand.style.transition = `all 0.05s`;
+      // }
+      
+      // convert seconds to degree terms
+      const secondsDegrees = ((seconds/60)*360) + 90; // add 90deg offset to compensate for starting position
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      
+      const minutes = now.getMinutes();
+      // ternary operator style
+      minutes == 0 ? minuteHand.style.transition = `none` : minuteHand.style.transition = `all 0.05s`;
+      const minutesDegrees = ((minutes/60)*360) + 90; // add 90deg offset to compensate for starting position
+      minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+      
+      const hours = now.getHours();
+      hours == 0 ? hourHand.style.transition = `none` : hourHand.style.transition = `all 0.05s`;
+      const hoursDegrees = ((hours/60)*360) + 90; // add 90deg offset to compensate for starting position
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+    
+    // 2 ways to deal with the "skip back to 90deg" upon reaching a full circle
+    // 1st is to continually tally the degrees (i.e. do not reset)
+    // 2nd is to apply an IF condition to take off the 'transition' CSS momentarily
+    // elected to go with Option #2; see code above!
 
+    setInterval(setDate, 1000);
   </script>
 </body>
 </html>
