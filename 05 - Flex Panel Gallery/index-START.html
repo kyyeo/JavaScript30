@@ -26,6 +26,9 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+
+      display: flex;
+
     }
 
     .panel {
@@ -36,6 +39,8 @@
       align-items: center;
       /* Safari transitionend event.propertyName === flex */
       /* Chrome + FF transitionend event.propertyName === flex-grow */
+
+      /* note 'transition' property */
       transition:
         font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
         flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
@@ -43,6 +48,15 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+
+      /* evenly distribute space amongst panels */
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+
+      /* an element in CSS can be both a flex item, and flex container! */
+      display: flex; /*note default is left-to-right orientation (i.e. row)*/
+      flex-direction: column;
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -56,6 +70,31 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+
+      /* border: 1px solid red; */
+
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* to hide initially */
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    /* to bring into view */
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+    
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -71,6 +110,9 @@
 
     .panel.open {
       font-size: 40px;
+
+      /* 5x amount of extra room */
+      flex: 5; 
     }
 
   </style>
@@ -105,7 +147,32 @@
   </div>
 
   <script>
+    // locate each of the 5 panels
+    // note how it is a nodeList. Thus, forEach() method is applicable 
+    const panels = document.querySelectorAll('.panel');
 
+    function toggleOpen() {
+      this.classList.toggle('open');
+    }
+    
+    function toggleActive(e) {
+      console.log(e);
+      console.log(e.propertyName); // see .panel.open above
+
+      // either check for flex or flex-grow, as some browsers like Safari might not pick it up
+      if(e.propertyName.includes('flex')){
+        this.classList.toggle('open-active');
+      }
+    }
+
+    // if toggleOpen() with the parentheses, then it runs on page load
+    // leaving out parentheses only sets a reference to the function 
+
+    // on click, toggle .open class
+    panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+    // when transition ends, toggle .open-active class
+    panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
+    
   </script>
 
 
