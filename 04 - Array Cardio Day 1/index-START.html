@@ -14,6 +14,7 @@
 
     // Some data we can work with
 
+    // array of objects
     const inventors = [
       { first: 'Albert', last: 'Einstein', year: 1879, passed: 1955 },
       { first: 'Isaac', last: 'Newton', year: 1643, passed: 1727 },
@@ -29,6 +30,7 @@
       { first: 'Hanna', last: 'Hammarström', year: 1829, passed: 1909 }
     ];
 
+    // array of strings
     const people = [
       'Bernhard, Sandra', 'Bethea, Erin', 'Becker, Carl', 'Bentsen, Lloyd', 'Beckett, Samuel', 'Blake, William', 'Berger, Ric', 'Beddoes, Mick', 'Beethoven, Ludwig',
       'Belloc, Hilaire', 'Begin, Menachem', 'Bellow, Saul', 'Benchley, Robert', 'Blair, Robert', 'Benenson, Peter', 'Benjamin, Walter', 'Berlin, Irving',
@@ -39,6 +41,10 @@
 
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
+    // filter() needs to be passed a function as a ARGUMENT, which is then looped over every single array item
+    // thus each 'inventor' from Inventors array is "processed"
+    // filter() can take 10 things and just return 2
+  
 
     // METHOD 1
     // const fifteen = inventors.filter(function(inventor){
@@ -48,6 +54,7 @@
     // });
 
     // METHOD 2
+    // make into an ARROW function
     // // const fifteen = inventors.filter(inventor => {
     //   if(inventor.year>=1500 && inventor.year<1600){
     //     return true //keep the object, would be false if not found
@@ -55,6 +62,7 @@
     // });
 
     // METHOD 3
+    // returns TRUE if AND condition is fulfilled
     const fifteen = inventors.filter(inventor => inventor.year >= 1500 && inventor.year < 1600);
 
     // console.log(fifteen);
@@ -62,18 +70,23 @@
 
     // Array.prototype.map()
     // 2. Give us an array of the inventors first and last names
-
-    // map() always returns the same amount of items as given
+    // map() always returns the same amount of items as given (i.e. array of same length)
     // filter() only returns the matching amount of items
 
+    // use backticks and template strings
+    // for each INVENTOR, style their first/last name, and return them into fullNames array
     const fullNames = inventors.map(inventor => `${inventor.first} ${inventor.last}`);
-    // console.log(fullNames);
+    console.log(fullNames);
     console.table(fullNames);
 
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+    // sort works by comparing 2 items at a time, then assigning -1 or +1
+    // leading to a "bubble" behaviour to move item up (-1) or down (+1) in the array
+    // think of array indices, where array[0] is the first item. thus, -1 brings the item earlier.
 
     // METHOD 1
+    // first person is "a", while second person for comparison is "b"
     // const sorted = inventors.sort(function(a, b){
     //     if(a.year > b.year) {
     //       return 1;
@@ -90,6 +103,18 @@
 
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live all together?
+    // reduce() builds on every item in the array, and returns that output, which could be an object (See Execise #8 below)
+
+      // following code block is for illustration
+      // reduce() achieves the same outcome!
+        // var totalYears = 0;
+        // for(var i = 0; i < inventors.length; i++) {
+        //   totalYears += inventors[i].year;
+        // }
+        // console.log(totalYears)
+
+
+    // "0" is a starting value
     const totalYears = inventors.reduce((total, inventor) => {
       return total + (inventor.passed - inventor.year);
     }, 0);
@@ -115,16 +140,27 @@
     console.table(oldest);
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
+    // following code to be applied within the Wikipedia page
+
+
 // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
 // const category = document.querySelector('.mw-category');
 
 //     // Method 1 to convert nodelist to array
+//     // realise that querySelector can be called against any DOM element, not just the 'document' 
+//     // grab all the links in the page
+//     // querySelector returns a nodeList. thus, convert to an array.
 //     // const links = Array.from(category.querySelectorAll('a'));
     
 //     // Method 2
+//    // or use an ES6 spread to spread every item into an array
+//    // spread takes items out of an iterable (e.g. nodeList) and puts it into an array
 // const links = [...category.querySelectorAll('a')];
     
     
+//      // .textContent returns only the text within the link
+//      // .map() transforms each link within links to just textContent
+//      // subsequently, .filter() returns the streetNames that include the substring 'de'
 // const de = links
 //               .map(link => link.textContent)
 //               .filter(streetName => streetName.includes('de'));
@@ -135,18 +171,22 @@
     // Sort the people alphabetically by last name
 console.log("Exercise 7")
 const alpha = people.sort((lastOne,nextOne)=>{
+  // extract the Last name based on comma delimiter
   const [aLast,aFirst] = lastOne.split(', ');
   const [bLast,bFirst] = nextOne.split(', ');
   
+  // strings are compared
+  // what is the basis for comparison though?
   return aLast>bLast ? 1 : -1;
-  
 });
 
 console.table(alpha);
 
 // 8. Reduce Exercise
-console.log("Exercise 8")
+// console.log("Exercise 8")
     // Sum up the instances of each of these
+    // i.e. tally the count each word
+
     const data = ['car', 'car', 'truck', 
                 'truck', 'bike', 'walk', 
                 'car', 'van', 'bike', 
@@ -154,24 +194,30 @@ console.log("Exercise 8")
                 'car', 'helicopter',
                 'truck'];
 
-    const t = data.reduce( (obj,item) => {
-      // console.table(obj);
-      // console.log(obj[item]); //no object of 'car' yet!
-      if(!obj[item]){
-        obj[item]=0; //initialise a value of 0, if the item cannot be found
-      }; 
-      console.log(obj[item]); //now there is a 'car'
-      // console.log(item);
-      obj[item]++;
-      return obj;
-    }, {});
+    // note that {} is just the starting blank object
+    // remember that reduce() requires a function
+
 
 
     // const t = data.reduce( (obj,item) => {
-    //   !obj[item] ? obj[item]=0 : console.log(item);
-    //   obj[item]++;
+    //   // console.table(obj);
+    //   // console.log(obj[item]); //no object of 'car' yet!
+    //   // must check for the KEY in the object, as it might not exist yet.
+    //   if(!obj[item]){
+    //     obj[item]=0; //initialise a value of 0, if the item cannot be found
+    //   }; 
+    //   console.log(obj[item]); //now there is a 'car'
+    //   // console.log(item);
+    //   obj[item]++; //increment
     //   return obj;
     // }, {});
+
+
+    const t = data.reduce( (obj,item) => {
+      !obj[item] ? obj[item]=0 : console.log(item);
+      obj[item]++;
+      return obj;
+    }, {});
 
     console.table(t);
 
